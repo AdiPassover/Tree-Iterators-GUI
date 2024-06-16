@@ -12,8 +12,6 @@ CODE_OBJECTS=$(subst .cpp,.o,$(CODE_SOURCES))
 tree: demo
 	./$^
 
-all: demo # test
-
 demo: Demo.o $(CODE_OBJECTS)
 	$(CXX) $(CXXFLAGS) $^ -o demo -lstdc++
 
@@ -27,9 +25,9 @@ tidy:
         -header-filter=".*" \
         -extra-arg=-Wno-shorten-64-to-32
 
-valgrind: demo test
+valgrind: demo # test
 	valgrind --tool=memcheck $(VALGRIND_FLAGS) ./demo 2>&1 | { egrep "lost| at " || true; }
-	valgrind --tool=memcheck $(VALGRIND_FLAGS) ./test 2>&1 | { egrep "lost| at " || true; }
+	#valgrind --tool=memcheck $(VALGRIND_FLAGS) ./test 2>&1 | { egrep "lost| at " || true; }
 
 %.o: %.cpp
 	$(CXX) $(CXXFLAGS) --compile $< -o $@

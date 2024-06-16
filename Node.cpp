@@ -1,45 +1,41 @@
-// 326627635 | adi.peisach@gmail.com
-
-#ifndef TREE_ITERATORS_NODE_CPP
-#define TREE_ITERATORS_NODE_CPP
-#include <memory>
+#ifndef TREE_ITERATORS_NODE
+#define TREE_ITERATORS_NODE
 #include <vector>
 #include <stdexcept>
+#include <iostream>
 
-using std::unique_ptr;
 using std::vector;
 
 template <typename T>
 class Node {
     T value;
-    vector<unique_ptr<Node<T>>> children;
+    vector<Node<T>*> children;
     unsigned int maxDeg = 0;
     unsigned int currChild = 0;
 
 public:
     Node(T value) : value(value) { children.resize(0); }
     Node(T value, unsigned int degree) : value(value) { setDegree(degree); }
-    ~Node() = default;
+    ~Node() {
+        for (auto& child : children)
+            delete child;
+        children.clear();
+    }
 
     void setDegree(unsigned int degree);
 
     T getValue() const { return value; }
     void setValue(T newValue) { this->value = newValue; }
 
-    void addChild(unique_ptr<Node<T>> child);
+    void addChild(Node<T>* child);
 
     T operator*() const { return value; }
 
     class Iterator {
-        vector<Node<T>*>& children;
+        vector<Node<T>*>* childrenIterator;
         size_t index;
     public:
-        explicit Iterator(vector<unique_ptr<Node<T>>>& c, size_t index = 0) : index(index) {
-            children.reserve(c.size());
-            for (auto& child : c) {
-                children.push_back(child.get());
-            }
-        }
+        explicit Iterator(vector<Node<T>*>* c, size_t index = 0) : childrenIterator(c), index(index) {}
 
         Iterator& operator++() {
             ++index;
@@ -51,25 +47,30 @@ public:
         }
 
         Node<T>& operator*() const {
-            return *children[index];
+            return *(*childrenIterator)[index];
         }
     };
 
     Iterator begin() {
-        return Iterator(children);
+        return Iterator(&children);
     }
 
     Iterator end() {
-        return Iterator(children, currChild);
+        return Iterator(&children, currChild);
     }
-
 };
 
 template<typename T>
-void Node<T>::addChild(unique_ptr<Node<T>> child) {
+std::ostream& operator<<(std::ostream& os, const Node<T>& node) {
+    os << node.getValue();
+    return os;
+}
+
+template<typename T>
+void Node<T>::addChild(Node<T>* child) {
     if (currChild >= maxDeg)
         throw std::out_of_range("The node has reached its maximum degree");
-    children[currChild++] = std::move(child);
+    children[currChild++] = child;
 }
 
 template<typename T>
@@ -80,5 +81,4 @@ void Node<T>::setDegree(unsigned int degree) {
     children.resize(degree);
 }
 
-
-#endif //TREE_ITERATORS_NODE_CPP
+#endif // TREE_ITERATORS_NODE

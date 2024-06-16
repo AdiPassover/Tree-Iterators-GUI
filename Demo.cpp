@@ -2,9 +2,6 @@
 /**
  * Demo app for Ex4
  */
-#include <iostream>
-#include <string>
-#include "Node.cpp"
 #include "Tree.cpp"
 
 using namespace std;
@@ -12,20 +9,16 @@ using namespace std;
 int main()
 {
 
-    Node<double> root_node(1.1);
+    cout << "started demo" << endl;
     Tree<double> tree; // Binary tree that contains doubles.
-    tree.addRoot(root_node);
-    Node<double> n1(1.2);
-    Node<double> n2(1.3);
-    Node<double> n3(1.4);
-    Node<double> n4(1.5);
-    Node<double> n5(1.6);
 
-    tree.addSubNode(root_node, n1);
-    tree.addSubNode(root_node, n2);
-    tree.addSubNode(n1, n3);
-    tree.addSubNode(n1, n4);
-    tree.addSubNode(n2, n5);
+    tree.addRoot(1.1);
+    tree.addSubNode(1.1, 1.2);
+    tree.addSubNode(1.1, 1.3);
+    tree.addSubNode(1.2, 1.4);
+    tree.addSubNode(1.2, 1.5);
+    tree.addSubNode(1.3, 1.6);
+    tree.addSubNode(1.4, 1.7);
 
     // The tree should look like:
     /**
@@ -34,6 +27,8 @@ int main()
      *    1.2      1.3
      *   /  \      /
      *  1.4  1.5  1.6
+     *  |
+     *  1.7
      */
 
 //    for (auto node = tree.begin_pre_order(); node != tree.end_pre_order(); ++node)
@@ -50,12 +45,21 @@ int main()
 //    {
 //        cout << node->getValue() << endl;
 //    } // prints: 1.4, 1.2, 1.5, 1.1, 1.6, 1.3
-//
-//    for (auto node = tree.begin_bfs_scan(); node != tree.endBFSScan(); ++node)
-//    {
-//        cout << *node << endl;
-//    } // prints: 1.1, 1.2, 1.3, 1.4, 1.5, 1.6
-//
+
+    cout << "BFS:" << endl;
+    for (auto node = tree.beginBFS(); node != tree.endBFS(); ++node)
+    {
+        cout << *node << " ";
+    } // prints: 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7
+    cout << endl;
+
+    cout << "DFS:" << endl;
+    for (auto node = tree.beginDFS(); node != tree.endDFS(); ++node)
+    {
+        cout << *node << " ";
+    } // prints: 1.7, 1.4, 1.5, 1.2, 1.6, 1.3, 1.1
+    cout << endl;
+
 //    for (auto node : tree)
 //    {
 //        cout << node.getValue() << endl;
@@ -80,4 +84,5 @@ int main()
 //     *  1.5      1.6
 //     */
 
+    return 0;
 }
