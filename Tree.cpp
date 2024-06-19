@@ -1,8 +1,10 @@
 #ifndef TREE_ITERATORS_TREE
 #define TREE_ITERATORS_TREE
 
-#include <queue>
 #include "Node.cpp"
+#include "Screen.hpp"
+#include <queue>
+#include <algorithm>
 
 template <typename T, unsigned int D = 2>
 class Tree {
@@ -18,87 +20,190 @@ public:
     Node<T>* getRoot() const { return root; }
     unsigned int getDegree() const { return D; }
 
-    class BFSIterator {
+    class TreeIterator {
+    protected:
         std::queue<Node<T>*> nodeQueue;
     public:
-        explicit BFSIterator(Node<T>* root = nullptr) {
-            if (root != nullptr)
-                nodeQueue.push(root);
-        }
 
-        BFSIterator& operator++() {
-            if (!nodeQueue.empty()) {
-                Node<T>* currNode = nodeQueue.front();
-                nodeQueue.pop();
-                for (auto& child : *currNode)
-                    nodeQueue.push(&child);
-            }
-            return *this;
-        }
-
-        bool operator!=(const BFSIterator& other) const {
-            return !nodeQueue.empty() || !other.nodeQueue.empty();
-        }
-
-        Node<T>& operator*() const {
-            return *nodeQueue.front();
-        }
-    };
-
-    BFSIterator beginBFS() {
-        return BFSIterator(root);
-    }
-
-    BFSIterator endBFS() {
-        return BFSIterator();
-    }
-
-    class DFSIterator {
-        std::queue<Node<T>*> nodeQueue;
-    public:
-        explicit DFSIterator(Node<T>* root = nullptr) {
-            if (root != nullptr)
-                DFS_Visit(root);
-        }
-
-        void DFS_Visit(Node<T>* node) {
-            for (auto& child : *node)
-                DFS_Visit(&child);
-            nodeQueue.push(node);
-        }
-
-        DFSIterator& operator++() {
+        virtual TreeIterator& operator++() {
             nodeQueue.pop();
             return *this;
         }
 
-        bool operator!=(const DFSIterator& other) const {
+        virtual bool operator!=(const TreeIterator& other) const {
             return !nodeQueue.empty() || !other.nodeQueue.empty();
         }
 
-        Node<T>& operator*() const {
+        virtual Node<T>& operator*() const {
             return *nodeQueue.front();
         }
     };
 
-    DFSIterator beginDFS() {
-        return DFSIterator(root);
+    class BFSIterator : public TreeIterator {
+    public:
+        explicit BFSIterator(Node<T>* root = nullptr) : TreeIterator() {
+            if (root != nullptr)
+                visitBFS(root);
+        }
+
+        void visitBFS(Node<T>* source) {
+            std::queue<Node<T>*> q;
+            q.push(source);
+            while (!q.empty()) {
+                Node<T>* node = q.front();
+                this->nodeQueue.push(node);
+                q.pop();
+                for (auto& child : *node)
+                    q.push(&child);
+            }
+        }
+    };
+
+    class PreOrderIterator : public TreeIterator {
+    public:
+        explicit PreOrderIterator(Node<T>* root = nullptr) : TreeIterator() {
+            if (root != nullptr)
+                visitPreOrder(root);
+        }
+
+        void visitPreOrder(Node<T>* node) {
+            this->nodeQueue.push(node);
+            for (auto& child : *node)
+                visitPreOrder(&child);
+        }
+
+    };
+
+    class PostOrderIterator : public TreeIterator {
+    public:
+        explicit PostOrderIterator(Node<T>* root = nullptr) : TreeIterator() {
+            if (root != nullptr)
+                visitPostOrder(root);
+        }
+
+        void visitPostOrder(Node<T>* node) {
+            for (auto& child : *node)
+                visitPostOrder(&child);
+            this->nodeQueue.push(node);
+        }
+
+    };
+
+    class InOrderIterator : public TreeIterator {
+    public:
+        explicit InOrderIterator(Node<T>* root = nullptr) {
+            if (root != nullptr)
+                visitInorder(root);
+        }
+
+        void visitInorder(Node<T>* node) {
+            if (node->numChildren() >= 1)
+                visitInorder(node->getChild(0));
+
+            this->nodeQueue.push(node);
+
+            if (node->numChildren() == 2)
+                visitInorder(node->getChild(1));
+        }
+    };
+
+    class DFSIterator : public TreeIterator {
+    public:
+        explicit DFSIterator(Node<T>* root = nullptr){
+            if (root != nullptr)
+                visitDFS(root);
+        }
+
+        void visitDFS(Node<T>* node) {
+            for (auto& child : *node)
+                visitDFS(&child);
+            this->nodeQueue.push(node);
+        }
+
+    };
+
+    TreeIterator begin() { return beginBFS(); }
+    TreeIterator end() { return endBFS(); }
+
+    TreeIterator beginBFS() { return BFSIterator(root); }
+    TreeIterator endBFS() { return BFSIterator(); }
+
+    TreeIterator beginDFS() { return DFSIterator(root); }
+    TreeIterator endDFS() { return DFSIterator(); }
+
+    TreeIterator beginPreOrder() {
+        if (D == 2)
+            return PreOrderIterator(root);
+        return beginDFS();
+    }
+    TreeIterator endPreOrder() {
+        if (D == 2)
+            return PreOrderIterator();
+        return endDFS();
     }
 
-    DFSIterator endDFS() {
-        return DFSIterator();
+    TreeIterator beginPostOrder() {
+        if (D == 2)
+            return PostOrderIterator(root);
+        return endDFS();
     }
+    TreeIterator endPostOrder() {
+        if (D == 2)
+            return PostOrderIterator();
+        return endDFS();
+    }
+
+    TreeIterator beginInOrder() {
+        if (D == 2)
+            return InOrderIterator(root);
+        return beginDFS();
+    }
+    TreeIterator endInOrder() {
+        if (D == 2)
+            return InOrderIterator();
+        return endDFS();
+    }
+
+    TreeIterator beginHeap() {
+        toHeap();
+        return beginBFS();
+    }
+    TreeIterator endHeap() {
+        return endBFS();
+    }
+
+    void display();
+
+    void clear() { delete root; root = nullptr; }
+    void toHeap();
 
 };
 
 template<typename T, unsigned int D>
+void Tree<T, D>::toHeap() {
+    if (D != 2)
+        throw std::logic_error("Can only turn binary trees to heaps");
+
+    std::vector<T> values;
+    for (auto& node : *this)
+        values.push_back(*node);
+    std::sort(values.begin(), values.end());
+
+    clear();
+
+    root = new Node<T>(values[0], D);
+    for (unsigned int i = 1; i < values.size(); i++)
+        addSubNode(values[(i-1)/2], values[i]);
+}
+
+template<typename T, unsigned int D>
 void Tree<T, D>::addSubNode(T parentValue, T childValue) {
     Node<T>* parent = nullptr;
-    for (auto node = beginBFS(); node != endBFS(); ++node) {
-        if (**node == childValue)
+    for (auto& node : *this) {
+        if (*node == childValue)
             throw std::logic_error("The child node already exists in the tree");
-        if (**node == parentValue)
-            parent = &(*node);
+        if (*node == parentValue)
+            parent = &node;
     }
     if (parent == nullptr)
         throw std::logic_error("The parent node does not exist in the tree");
@@ -110,6 +215,11 @@ void Tree<T, D>::addRoot(T nodeValue) {
     if (root != nullptr)
         throw std::logic_error("The root of the tree has already been set");
     root = new Node<T>(nodeValue, D);
+}
+
+template<typename T, unsigned int D>
+void Tree<T, D>::display() {
+    makeScreen(*this);
 }
 
 #endif // TREE_ITERATORS_TREE

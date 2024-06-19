@@ -23,11 +23,11 @@ public:
     }
 
     void setDegree(unsigned int degree);
-
     T getValue() const { return value; }
-    void setValue(T newValue) { this->value = newValue; }
 
     void addChild(Node<T>* child);
+    unsigned int numChildren() const { return currChild; }
+    Node<T>* getChild(unsigned int index) const { return children[index]; }
 
     T operator*() const { return value; }
 

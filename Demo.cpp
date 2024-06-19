@@ -1,15 +1,69 @@
 // 326627635 | adi.peisach@gmail.com
-/**
- * Demo app for Ex4
- */
-#include "Tree.cpp"
+
+#include "Screen.hpp"
+#include <string>
 
 using namespace std;
 
-int main()
-{
+void demonstrateTree();
 
-    cout << "started demo" << endl;
+int main() {
+//    demonstrateTree();
+    cout << "Binary tree:" << endl;
+    Tree<double> tree; // Binary tree that contains doubles.
+
+    tree.addRoot(1.1);
+    tree.addSubNode(1.1, 1.2);
+    tree.addSubNode(1.1, 1.3);
+    tree.addSubNode(1.2, 1.4);
+    tree.addSubNode(1.2, 1.5);
+    tree.addSubNode(1.3, 1.6);
+    tree.addSubNode(1.4, 1.7);
+
+    for (auto& node : tree) {
+        cout << *node << " ";
+    } cout << endl;
+    for (auto node = tree.beginBFS(); node != tree.endBFS(); ++node) {
+        cout << **node << " ";
+    } cout << endl;
+    for (auto node = tree.beginDFS(); node != tree.endDFS(); ++node) {
+        cout << **node << " ";
+    } cout << endl;
+
+    tree.display();
+    tree.toHeap();
+    tree.display();
+
+    Tree<unsigned int, 3> three_ary_tree; // 3-ary tree.
+    three_ary_tree.addRoot(1);
+    three_ary_tree.addSubNode(1, 2);
+    three_ary_tree.addSubNode(1, 3);
+    three_ary_tree.addSubNode(1, 4);
+    three_ary_tree.addSubNode(2, 5);
+    three_ary_tree.addSubNode(2, 51);
+    three_ary_tree.addSubNode(2, 52);
+    three_ary_tree.addSubNode(3, 6);
+
+//    three_ary_tree.display();
+
+    Tree<string, 3> three_ary_tree2; // 3-ary tree.
+    three_ary_tree2.addRoot("1");
+    three_ary_tree2.addSubNode("1", "2");
+    three_ary_tree2.addSubNode("1", "3");
+    three_ary_tree2.addSubNode("1", "4");
+    three_ary_tree2.addSubNode("2", "5");
+    three_ary_tree2.addSubNode("2", "51");
+    three_ary_tree2.addSubNode("2", "52");
+    three_ary_tree2.addSubNode("3", "6");
+
+//    three_ary_tree2.display();
+
+    return 0;
+}
+
+
+void demonstrateTree() {
+    cout << "Binary tree:" << endl;
     Tree<double> tree; // Binary tree that contains doubles.
 
     tree.addRoot(1.1);
@@ -31,20 +85,26 @@ int main()
      *  1.7
      */
 
-//    for (auto node = tree.begin_pre_order(); node != tree.end_pre_order(); ++node)
-//    {
-//        cout << *node << endl;
-//    } // prints: 1.1, 1.2, 1.4, 1.5, 1.3, 1.6
+    cout << "Pre order:" << endl;
+    for (auto node = tree.beginPreOrder(); node != tree.endPreOrder(); ++node)
+    {
+        cout << *node << " ";
+    } // prints: 1.1, 1.2, 1.4, 1.5, 1.3, 1.6
+    cout << endl;
 
-//    for (auto node = tree.begin_post_order(); node != tree.end_post_order(); ++node)
-//    {
-//        cout << node->getValue() << endl;
-//    } // prints: 1.4, 1.5, 1.2, 1.6, 1.3, 1.1
-//
-//    for (auto node = tree.begin_in_order(); node != tree.end_in_order(); ++node)
-//    {
-//        cout << node->getValue() << endl;
-//    } // prints: 1.4, 1.2, 1.5, 1.1, 1.6, 1.3
+    cout << "Post order:" << endl;
+    for (auto node = tree.beginPostOrder(); node != tree.endPostOrder(); ++node)
+    {
+        cout << *node << " ";
+    } // prints: 1.7, 1.4, 1.5, 1.2, 1.6, 1.3, 1.1
+    cout << endl;
+
+    cout << "In order:" << endl;
+    for (auto node = tree.beginInOrder(); node != tree.endInOrder(); ++node)
+    {
+        cout << *node << " ";
+    } // prints: 1.4, 1.2, 1.5, 1.1, 1.6, 1.3
+    cout << endl;
 
     cout << "BFS:" << endl;
     for (auto node = tree.beginBFS(); node != tree.endBFS(); ++node)
@@ -60,29 +120,38 @@ int main()
     } // prints: 1.7, 1.4, 1.5, 1.2, 1.6, 1.3, 1.1
     cout << endl;
 
+//    cout << "heap: " << endl;
 //    for (auto node : tree)
 //    {
 //        cout << node.getValue() << endl;
-//    } // same as BFS: 1.1, 1.2, 1.3, 1.4, 1.5, 1.6
-//
-//    cout << tree; // Should print the graph using GUI.
-//
-//    Tree<double,3> three_ary_tree; // 3-ary tree.
-//    three_ary_tree.addRoot(root_node);
-//    three_ary_tree.addSubNode(root_node, n1);
-//    three_ary_tree.addSubNode(root_node, n2);
-//    three_ary_tree.addSubNode(root_node, n3);
-//    three_ary_tree.addSubNode(n1, n4);
-//    three_ary_tree.addSubNode(n2, n5);
-//
-//    // The tree should look like:
-//    /**
-//     *       root = 1.1
-//     *     /      |     \
-//     *    1.2    1.3    1.4
-//     *   /        |
-//     *  1.5      1.6
-//     */
+//    } // same as BFS: 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7
+//    cout << endl;
 
-    return 0;
+//    cout << tree; // Should print the graph using GUI.
+
+    cout << "3-ary tree:" << endl;
+    Tree<string, 3> three_ary_tree; // 3-ary tree.
+    three_ary_tree.addRoot("1");
+    three_ary_tree.addSubNode("1", "2");
+    three_ary_tree.addSubNode("1", "3");
+    three_ary_tree.addSubNode("1", "4");
+    three_ary_tree.addSubNode("2", "5");
+    three_ary_tree.addSubNode("3", "6");
+
+    // The tree should look like:
+    /**
+     *       root = 1
+     *     /      |     \
+     *    2       3      4
+     *   /        |
+     *  5         6
+     */
+
+    cout << "BFS: " << endl;
+    for (auto node = three_ary_tree.beginBFS(); node != three_ary_tree.endBFS(); ++node)
+    {
+        cout << *node << " ";
+    } // prints: 1 2 3 4 5 6
+    cout << endl;
+
 }
