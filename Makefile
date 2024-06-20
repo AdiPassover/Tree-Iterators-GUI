@@ -371,11 +371,6 @@ compiler_lex_make_all:
 compiler_lex_clean:
 compiler_clean: compiler_moc_predefs_clean 
 
-
-valgrind: first
-	valgrind --tool=memcheck -v --leak-check=full --show-leak-kinds=all  --error-exitcode=99 ./main 2>&1 | { egrep "lost| at " || true; }
-
-
 ####### Compile
 
 Demo.o: Demo.cpp Screen.hpp \

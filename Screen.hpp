@@ -12,53 +12,11 @@
 #include <QGraphicsLineItem>
 #include <QGuiApplication>
 #include <QScreen>
+#include <QTextEdit>
 #include "Tree.cpp"
 #include "Constants.hpp"
 
 using std::string;
-
-template<typename T, unsigned int D>
-class Screen {
-    Tree<T, D>* tree;
-    QGraphicsView* view;
-    QGraphicsScene* scene;
-    int screenWidth;
-    int screenHeight;
-
-public:
-    Screen(Tree<T,D>& tree) {
-        int argc = 1;
-        char a = 'x';
-        char* pa = &a;
-        char* argv[1] = {pa};
-        QApplication app(argc, argv);
-
-        QMainWindow mainWindow;
-        mainWindow.setWindowTitle("Tree Iterator Visualization | ★ Adi Peisach ★");
-        mainWindow.showMaximized();
-
-        scene = new QGraphicsScene(&mainWindow);
-        view = new QGraphicsView(scene, &mainWindow);
-        view->setRenderHint(QPainter::Antialiasing);
-        mainWindow.setCentralWidget(view);
-
-        QScreen *screen = QGuiApplication::primaryScreen();
-        QRect screenGeometry = screen->geometry();
-        screenWidth = screenGeometry.width()*0.75;
-        screenHeight = screenGeometry.height();
-
-        this->tree = &tree;
-        displayTree();
-
-        app.exec();
-    }
-
-private:
-    void displayTree();
-    void displayNode(typename Node<T>::Node* node, int x, int y, int leftBorder, int rightBorder);
-    QPointF drawNode(typename Node<T>::Node* node, int x, int y);
-
-};
 
 template <typename T>
 QString toQString(T value) {
@@ -77,6 +35,131 @@ template <>
 inline QString toQString<string>(string value) {
     return QString::fromStdString(value);
 }
+
+template<typename T, unsigned int D>
+class Screen {
+    QApplication* app;
+    QMainWindow* mainWindow;
+    Tree<T, D>* tree;
+    QGraphicsView* view;
+    QGraphicsScene* scene;
+    int screenWidth;
+    int screenHeight;
+
+    QPushButton* bfsButton;
+    QPushButton* dfsButton;
+    QPushButton* preOrderButton;
+    QPushButton* inOrderButton;
+    QPushButton* postOrderButton;
+    QPushButton* heapButton;
+    QTextEdit* textBox;
+
+public:
+    Screen(Tree<T,D>& tree) {
+        int argc = 1;
+        char a = 'x';
+        char* pa = &a;
+        char* argv[1] = {pa};
+        app = new QApplication(argc, argv);
+
+        mainWindow = new QMainWindow();
+        mainWindow->setWindowTitle("Tree Iterator Visualization | ★ Adi Peisach ★");
+        mainWindow->showMaximized();
+
+        scene = new QGraphicsScene(mainWindow);
+        view = new QGraphicsView(scene, mainWindow);
+        view->setRenderHint(QPainter::Antialiasing);
+        mainWindow->setCentralWidget(view);
+
+        QScreen *screen = QGuiApplication::primaryScreen();
+        QRect screenGeometry = screen->geometry();
+        screenWidth = screenGeometry.width()*0.75;
+        screenHeight = screenGeometry.height();
+
+        this->tree = &tree;
+        displayTree();
+
+        textBox = new QTextEdit(mainWindow);
+        textBox->setGeometry(QRect(QPoint(600, 0), QSize(screenWidth-600, 30)));
+        textBox->setText("Initial text");
+        textBox->show();
+
+        bfsButton = new QPushButton("BFS", mainWindow);
+        bfsButton->move(0,0);
+        bfsButton->show();
+        QObject::connect(bfsButton, &QPushButton::clicked, [&]() {
+            string text = "";
+            for (auto node = tree.beginBFS(); node != tree.endBFS(); ++node) {
+                text.append(toQString(**node).toStdString() + " ");
+            }
+            textBox->setText(QString::fromStdString(text));
+        });
+
+        dfsButton = new QPushButton("DFS", mainWindow);
+        dfsButton->move(100,0);
+        dfsButton->show();
+        QObject::connect(dfsButton, &QPushButton::clicked, [&]() {
+            string text = "";
+            for (auto node = tree.beginDFS(); node != tree.endDFS(); ++node) {
+                text.append(toQString(**node).toStdString() + " ");
+            }
+            textBox->setText(QString::fromStdString(text));
+        });
+
+        preOrderButton = new QPushButton("Pre-Order", mainWindow);
+        preOrderButton->move(200,0);
+        preOrderButton->show();
+        QObject::connect(preOrderButton, &QPushButton::clicked, [&]() {
+            string text = "";
+            for (auto node = tree.beginPreOrder(); node != tree.endPreOrder(); ++node) {
+                text.append(toQString(**node).toStdString() + " ");
+            }
+            textBox->setText(QString::fromStdString(text));
+        });
+
+        inOrderButton = new QPushButton("In-Order", mainWindow);
+        inOrderButton->move(300,0);
+        inOrderButton->show();
+        QObject::connect(inOrderButton, &QPushButton::clicked, [&]() {
+            string text = "";
+            for (auto node = tree.beginInOrder(); node != tree.endInOrder(); ++node) {
+                text.append(toQString(**node).toStdString() + " ");
+            }
+            textBox->setText(QString::fromStdString(text));
+        });
+
+        postOrderButton = new QPushButton("Post-Order", mainWindow);
+        postOrderButton->move(400,0);
+        postOrderButton->show();
+        QObject::connect(postOrderButton, &QPushButton::clicked, [&]() {
+            string text = "";
+            for (auto node = tree.beginPostOrder(); node != tree.endPostOrder(); ++node) {
+                text.append(toQString(**node).toStdString() + " ");
+            }
+            textBox->setText(QString::fromStdString(text));
+        });
+
+        heapButton = new QPushButton("Heap", mainWindow);
+        heapButton->move(500,0);
+        heapButton->show();
+        QObject::connect(heapButton, &QPushButton::clicked, [&]() {
+            string text = "";
+            for (auto node = tree.beginHeap(); node != tree.endHeap(); ++node) {
+                text.append(toQString(**node).toStdString() + " ");
+            }
+            textBox->setText(QString::fromStdString(text));
+            displayTree();
+        });
+
+        app->exec();
+    }
+
+private:
+    void displayTree();
+    void displayNode(typename Node<T>::Node* node, int x, int y, int leftBorder, int rightBorder);
+    QPointF drawNode(typename Node<T>::Node* node, int x, int y);
+
+};
 
 template<typename T, unsigned int D>
 QPointF Screen<T, D>::drawNode(typename Node<T>::Node* node, int x, int y) {
@@ -104,6 +187,7 @@ Screen<T, D> makeScreen(Tree<T, D> &inputTree) {
 
 template<typename T, unsigned int D>
 void Screen<T, D>::displayTree() {
+    scene->clear();
     if (tree->getRoot() == nullptr) return;
 
     // Starting coordinates and spacing

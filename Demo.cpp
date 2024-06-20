@@ -29,6 +29,9 @@ int main() {
     for (auto node = tree.beginDFS(); node != tree.endDFS(); ++node) {
         cout << **node << " ";
     } cout << endl;
+    for (auto node = tree.beginPostOrder(); node != tree.endPostOrder(); ++node) {
+        cout << **node << " ";
+    } cout << endl;
 
     tree.display();
     tree.toHeap();
