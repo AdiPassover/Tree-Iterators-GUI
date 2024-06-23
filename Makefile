@@ -53,9 +53,11 @@ OBJECTS_DIR   = ./
 ####### Files
 
 SOURCES       = Demo.cpp \
-		Screen.cpp 
+		Screen.cpp \
+		Complex.cpp 
 OBJECTS       = Demo.o \
-		Screen.o
+		Screen.o \
+		Complex.o
 DIST          = /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/common/unix.conf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/common/linux.conf \
@@ -133,8 +135,10 @@ DIST          = /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/exceptions.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/yacc.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/lex.prf \
-		project.pro Screen.hpp Demo.cpp \
-		Screen.cpp
+		project.pro Screen.hpp \
+		Complex.hpp Demo.cpp \
+		Screen.cpp \
+		Complex.cpp
 QMAKE_TARGET  = main
 DESTDIR       = 
 TARGET        = main
@@ -318,8 +322,8 @@ distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
 	$(COPY_FILE) --parents /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/data/dummy.cpp $(DISTDIR)/
-	$(COPY_FILE) --parents Screen.hpp $(DISTDIR)/
-	$(COPY_FILE) --parents Demo.cpp Screen.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents Screen.hpp Complex.hpp $(DISTDIR)/
+	$(COPY_FILE) --parents Demo.cpp Screen.cpp Complex.cpp $(DISTDIR)/
 
 
 clean: compiler_clean 
@@ -376,14 +380,19 @@ compiler_clean: compiler_moc_predefs_clean
 Demo.o: Demo.cpp Screen.hpp \
 		Tree.cpp \
 		Node.cpp \
-		Constants.hpp
+		Constants.hpp \
+		Complex.hpp
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o Demo.o Demo.cpp
 
 Screen.o: Screen.cpp Screen.hpp \
 		Tree.cpp \
 		Node.cpp \
-		Constants.hpp
+		Constants.hpp \
+		Complex.hpp
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o Screen.o Screen.cpp
+
+Complex.o: Complex.cpp Complex.hpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o Complex.o Complex.cpp
 
 ####### Install
 

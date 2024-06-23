@@ -15,6 +15,7 @@
 #include <QTextEdit>
 #include "Tree.cpp"
 #include "Constants.hpp"
+#include "Complex.hpp"
 
 using std::string;
 
@@ -34,6 +35,12 @@ inline QString toQString<double>(double value) {
 template <>
 inline QString toQString<string>(string value) {
     return QString::fromStdString(value);
+}
+
+template <>
+inline QString toQString<Complex>(Complex value) {
+    string str = value.toString();
+    return QString::fromStdString(str);
 }
 
 template<typename T, unsigned int D>
@@ -81,7 +88,7 @@ public:
 
         textBox = new QTextEdit(mainWindow);
         textBox->setGeometry(QRect(QPoint(600, 0), QSize(screenWidth-600, 30)));
-        textBox->setText("Initial text");
+        textBox->setText("");
         textBox->show();
 
         bfsButton = new QPushButton("BFS", mainWindow);

@@ -7,8 +7,8 @@ CONFIG   -= app_bundle
 
 TEMPLATE = app
 
-SOURCES += Demo.cpp Node.cpp Tree.cpp Screen.cpp
-HEADERS += Screen.hpp
+SOURCES += Demo.cpp Node.cpp Tree.cpp Screen.cpp Complex.cpp
+HEADERS += Screen.hpp Complex.hpp
 
 # Define a custom target to run the program
 run.target = tree

@@ -6,7 +6,7 @@
 namespace Constants {
 
     const int VERTICAL_SPACING = 75;
-    const int NODE_RADIUS = 25;
+    const int NODE_RADIUS = 40;
 
 }
 
