@@ -2,7 +2,6 @@
 #define TREE_ITERATORS_TREE
 
 #include "Node.cpp"
-#include "Screen.hpp"
 #include <queue>
 #include <algorithm>
 
@@ -145,7 +144,7 @@ public:
     TreeIterator beginPostOrder() {
         if (D == 2)
             return PostOrderIterator(root);
-        return endDFS();
+        return beginDFS();
     }
     TreeIterator endPostOrder() {
         if (D == 2)
@@ -215,11 +214,6 @@ void Tree<T, D>::addRoot(T nodeValue) {
     if (root != nullptr)
         throw std::logic_error("The root of the tree has already been set");
     root = new Node<T>(nodeValue, D);
-}
-
-template<typename T, unsigned int D>
-void Tree<T, D>::display() {
-    makeScreen(*this);
 }
 
 #endif // TREE_ITERATORS_TREE

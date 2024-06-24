@@ -8,7 +8,6 @@ CONFIG   -= app_bundle
 TEMPLATE = app
 
 SOURCES += Demo.cpp Node.cpp Tree.cpp Screen.cpp Complex.cpp
-HEADERS += Screen.hpp Complex.hpp
 
 # Define a custom target to run the program
 run.target = tree
@@ -17,5 +16,17 @@ run.depends = first # Depend on the first build target, ensuring the program is 
 
 QMAKE_EXTRA_TARGETS += run
 
-# Add the tree executable to the clean files
-QMAKE_CLEAN += main Demo.o
+# Define the custom target for the test
+test.target = test
+test.commands = ./test
+test.depends = test_executable
+
+QMAKE_EXTRA_TARGETS += test
+
+test_executable.target = testMake
+test_executable.depends = Test.o Node.o Tree.o Complex.o
+test_executable.commands = g++ -o test Test.o Node.o Tree.o Complex.o
+
+QMAKE_EXTRA_TARGETS += test_executable
+
+QMAKE_CLEAN += main test Demo.o Node.o Tree.o Screen.o Complex.o Test.o

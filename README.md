@@ -44,7 +44,51 @@ Note that Node overloads the * operator to return the value of the node.
 In order to display the ree using the GUI, use the function ```display()```. The GUI will display the
 tree and allow the user to traverse it using buttons.
 
+## How to run
+
+To run the project, you will first have to build the makefile using the following command:
+
+    qmake project.pro
+
+Then, you will be able to run Demo.cpp, which contains a demonstration of the tree and the GUI using:
+
+    make
+
+or
+
+    make tree
+
+In order to run the tests, use the following command:
+
+    make test
+
+You can also use the shell script ```run.sh``` to build and run the project:
+
+    ./run.sh
+
+Don't forget to give the script execution permissions:
+
+    chmod +x run.sh
+
 ### Complex
 
 I've also added a Complex number class, which the tree supports as well. The Complex class supports
 the operations: +, -, *, /, ==, !=, <= and >= and also has a ```toString()``` function.
+
+## Libraries used
+
+I've used the standard C++ libraries for standard containers and algorithms such as vector and queue, 
+as well as the QT library for the GUI.
+
+## Hierarchy
+
+The project is divided into the following files:
+
+- ```Demo.cpp```: Contains a demonstration of the tree and the GUI.
+- ```Tree.cpp```: Contains the tree class and the iterators. It contains an abstract TreeIterator
+class and an iterator class for each traversal method mentioned above that extends TreeIterator.
+- ```Node.cpp```: Contains the Node class, which contains a value and a list of children.
+- ```Complex.cpp```: Contains the complex number class.
+- ```Screen.cpp```: Contains the GUI class that controls the displaying of the tree and the buttons.
+- ```Constants.hpp```: Contains the constants used in the project.
+- ```Test.cpp```: Contains the tests for the project.
