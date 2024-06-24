@@ -15,7 +15,7 @@ tree and the type of the data that the tree will contain T.
 Build the tree using the functions: ```addRoot(value)``` and ```addSubNode(parentValue, childValue)```.
 For example:
 
-    Tree<int, 3> tree;
+    Tree<int, 2> tree;
     tree.addRoot(1);
     tree.addSubNode(1, 2);
     tree.addSubNode(1, 3);
@@ -23,6 +23,10 @@ For example:
     tree.addSubNode(2, 5);
     tree.addSubNode(3, 6);
     tree.addSubNode(3, 7);
+
+Will create the following tree:
+
+![Tree](ExampleTree.png)
 
 You can use the following iterators to traverse the tree:
 
@@ -41,7 +45,7 @@ The default iterator is ```BFS```. Here's an example:
 
 Note that Node overloads the * operator to return the value of the node.
 
-In order to display the ree using the GUI, use the function ```display()```. The GUI will display the
+In order to display the ree using the GUI, use the function ```display(tree)```. The GUI will display the
 tree and allow the user to traverse it using buttons.
 
 ## How to run

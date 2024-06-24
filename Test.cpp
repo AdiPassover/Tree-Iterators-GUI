@@ -254,8 +254,7 @@ TEST_CASE("Complex numbers") {
     CHECK((prod1 == Complex(5, -10)));
 
     Complex div1 = c1 / c3;
-    CHECK(div1.getReal() == doctest::Approx(0.26685).epsilon(0.0001));
-    CHECK(div1.getImaginary() == doctest::Approx(0.0733761).epsilon(0.0001));
+    CHECK(div1 == Complex(0.26685,0.0733761));
 
     CHECK((c1.toString() == "(1.,2.)"));
     CHECK((c2.toString() == "(-3.,-4.)"));

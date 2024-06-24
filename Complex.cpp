@@ -3,6 +3,7 @@
 #ifndef TREE_ITERATORS_GUI_COMPLEX
 #define TREE_ITERATORS_GUI_COMPLEX
 #include <string>
+#include "Constants.hpp"
 
 using std::string;
 
@@ -54,7 +55,8 @@ public:
     }
 
     bool operator==(const Complex& other) const {
-        return (real == other.real) && (imaginary == other.imaginary);
+        return (std::abs(real - other.real) <= Constants::EPS)
+            && (std::abs(imaginary - other.imaginary) <= Constants::EPS);
     }
 
     bool operator!=(const Complex& other) const {
