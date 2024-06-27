@@ -171,9 +171,11 @@ public:
         return endBFS();
     }
 
-    void display();
-
     void clear() { delete root; root = nullptr; }
+
+    /**
+     * Turns the binary tree into a heap.
+     */
     void toHeap();
 
 };
@@ -183,13 +185,14 @@ void Tree<T, D>::toHeap() {
     if (D != 2)
         throw std::logic_error("Can only turn binary trees to heaps");
 
+    // Sort the values of the tree
     std::vector<T> values;
     for (auto& node : *this)
         values.push_back(*node);
     std::sort(values.begin(), values.end());
 
+    // Reconstruct the tree
     clear();
-
     root = new Node<T>(values[0], D);
     for (unsigned int i = 1; i < values.size(); i++)
         addSubNode(values[(i-1)/2], values[i]);
@@ -206,6 +209,8 @@ void Tree<T, D>::addSubNode(T parentValue, T childValue) {
     }
     if (parent == nullptr)
         throw std::logic_error("The parent node does not exist in the tree");
+    if (parent->numChildren() >= D)
+        throw std::logic_error("The parent has reached its maximum degree");
     parent->addChild(new Node<T>(childValue, D));
 }
 

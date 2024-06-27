@@ -74,6 +74,10 @@ Don't forget to give the script execution permissions:
 
     chmod +x run.sh
 
+In order to run valgrind:
+
+    valgrind --tool=memcheck $(VALGRIND_FLAGS) ./test 2>&1 | { egrep "lost| at " || true; }
+
 ### Complex
 
 I've also added a Complex number class, which the tree supports as well. The Complex class supports

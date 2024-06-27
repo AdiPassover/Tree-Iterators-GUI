@@ -63,29 +63,32 @@ class Screen {
 
 public:
     Screen(Tree<T,D>& tree) {
+        // Initialize the GUI
         int argc = 1;
         char a = 'x';
         char* pa = &a;
         char* argv[1] = {pa};
         app = new QApplication(argc, argv);
 
+        // Create the main window
         mainWindow = new QMainWindow();
         mainWindow->setWindowTitle("Tree Iterator Visualization | ★ Adi Peisach ★");
         mainWindow->showMaximized();
-
         scene = new QGraphicsScene(mainWindow);
         view = new QGraphicsView(scene, mainWindow);
         view->setRenderHint(QPainter::Antialiasing);
         mainWindow->setCentralWidget(view);
-
         QScreen *screen = QGuiApplication::primaryScreen();
         QRect screenGeometry = screen->geometry();
+
         screenWidth = screenGeometry.width()*0.75;
         screenHeight = screenGeometry.height();
 
+        // Set the tree and display it
         this->tree = &tree;
         displayTree();
 
+        // Create buttons and text box
         textBox = new QTextEdit(mainWindow);
         textBox->setGeometry(QRect(QPoint(600, 0), QSize(screenWidth-600, 30)));
         textBox->setText("");
@@ -191,6 +194,9 @@ QPointF Screen<T, D>::drawNode(typename Node<T>::Node* node, int x, int y) {
     return ellipse->rect().center();
 }
 
+/**
+ * Display the tree in a GUI window
+ */
 template<typename T, unsigned int D>
 Screen<T, D> display(Tree<T, D> &inputTree) {
     return Screen<T, D>(inputTree);
